@@ -2,7 +2,8 @@
     "AR_CONFIG": {
         "T_DEPTH": 12,
         "T_NUM_HEADS": 12,
-        "PREV_RATIO": 1
+        "PREV_RATIO": 1,
+        "AUDIO_ENCODER": "wav2vec"
     },
     "VAE_CONFIG": {
         "MOTION_DIM": 106,

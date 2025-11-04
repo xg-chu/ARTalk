@@ -59,6 +59,113 @@ class BitwiseARModel(nn.Module):
     def device(self):
         return next(self.parameters()).device
 
+    def forward(self, batch, cfg_scale=1.1):
+        """Training forward pass with teacher forcing.
+
+        Args:
+            batch: dict with keys:
+                - audio: [B, audio_samples] audio waveform
+                - motion: [B, T, 106] ground truth motion
+                - style_motion: [B, 50, 106] optional style motion
+            cfg_scale: classifier-free guidance scale
+
+        Returns:
+            dict with keys:
+                - logits: [B, sum(patch_nums), code_dim, 2] predicted logits
+                - targets: [B, sum(patch_nums), code_dim] target binary codes
+                - motion_recon: [B, T, 106] reconstructed motion from targets
+        """
+        batch_size = batch["audio"].shape[0]
+        seq_length = batch["motion"].shape[1]
+
+        # Encode style condition
+        if 'style_motion' in batch.keys() and batch['style_motion'] is not None:
+            motion_style = self.style_encoder(batch["style_motion"])
+            motion_style_cond = self.style_cond_embed(motion_style)[:, None]
+            if cfg_scale != 1.0:
+                motion_style_cond = motion_style_cond * cfg_scale - self.null_style_cond * (cfg_scale - 1.0)
+        else:
+            motion_style_cond = self.null_style_cond.expand(batch_size, -1, -1)
+
+        # Prepare positional embeddings
+        lvl_pos_embed = self.lvl_embed(self.lvl_idx) + self.pos_embed
+        prev_lvl_pos_embed = self.lvl_embed(self.lvl_idx).repeat(1, self.prev_ratio, 1) + self.prev_pos_embed
+
+        # Encode audio at all scales
+        audio_feat = self.audio_encoder(batch["audio"]).permute(0, 2, 1)  # B, L, C -> B, C, L
+        audio_feats = [F.interpolate(audio_feat, size=(pn), mode='area').permute(0, 2, 1) for pn in self.patch_nums]  # B, L, C
+        audio_cond = torch.cat(audio_feats, dim=1)  # [B, sum(patch_nums), C]
+
+        # Encode ground truth motion to get target codes
+        with torch.no_grad():
+            # Pad motion to match patch size
+            padded_frame_length = (seq_length // self.patch_nums[-1] + (1 if seq_length % self.patch_nums[-1] != 0 else 0)) * self.patch_nums[-1]
+            gt_motion = batch["motion"]
+            if padded_frame_length > seq_length:
+                gt_motion = torch.cat([
+                    gt_motion,
+                    gt_motion.new_zeros(batch_size, padded_frame_length - seq_length, gt_motion.shape[-1])
+                ], dim=1)
+
+            # Split into chunks (assume single chunk for now, can extend for longer sequences)
+            # For each chunk of 100 frames
+            prev_motion = gt_motion.new_zeros(batch_size, self.patch_nums[-1], self.basic_vae.motion_dim)
+            this_motion = gt_motion[:, :self.patch_nums[-1]]
+
+            prev_code_bits, this_code_bits = self.basic_vae.quant_to_vqidx(prev_motion, this_motion)
+            target_codes = this_code_bits  # [B, sum(patch_nums), code_dim]
+
+            # Get previous context features
+            prev_vqfeat = self.basic_vae.vqidx_to_ms_vqfeat(prev_code_bits)
+            prev_attn_feat = torch.cat([motion_style_cond, self.vqfeat_embed(prev_vqfeat)], dim=1).repeat(1, self.prev_ratio, 1)
+
+        # Teacher forcing: use ground truth codes up to current level
+        all_logits = []
+        next_ar_vqfeat = motion_style_cond
+
+        for pidx, pn in enumerate(self.patch_nums):
+            # Get audio condition up to current level
+            patch_audio_cond = audio_cond[:, :sum(self.patch_nums[:pidx+1])]
+
+            # Get attention bias up to current level
+            patch_attn_bias = self.attn_bias_for_masking[:, :, :sum(self.patch_nums[:pidx+1]), :sum(self.patch_nums[:pidx+1])+sum(self.patch_nums)*self.prev_ratio]
+
+            # Add positional embeddings
+            attn_feat = next_ar_vqfeat + lvl_pos_embed[:, :next_ar_vqfeat.shape[1]]
+
+            # Run through transformer blocks
+            for bidx in range(self.attn_depth):
+                attn_feat = self.attn_blocks[bidx](
+                    attn_feat,
+                    prev_attn_feat + prev_lvl_pos_embed,
+                    patch_audio_cond,
+                    attn_bias=patch_attn_bias
+                )
+
+            # Predict logits
+            pred_logits = self.logits_head(self.cond_logits_head(attn_feat, patch_audio_cond))
+            pred_logits = pred_logits.view(batch_size, attn_feat.shape[1], self.basic_vae.code_dim, 2)
+            all_logits.append(pred_logits)
+
+            # Teacher forcing: use ground truth codes for next level
+            if pidx < len(self.patch_nums) - 1:
+                gt_codes_up_to_this_level = target_codes[:, :sum(self.patch_nums[:pidx+1])]
+                next_ar_vqfeat = self.basic_vae.vqidx_to_ar_vqfeat(pidx, gt_codes_up_to_this_level)
+                next_ar_vqfeat = torch.cat([motion_style_cond, self.vqfeat_embed(next_ar_vqfeat)], dim=1)
+
+        # Concatenate all logits
+        logits = torch.cat(all_logits, dim=1)  # [B, sum(patch_nums), code_dim, 2]
+
+        # Reconstruct motion from target codes for visualization
+        with torch.no_grad():
+            _, motion_recon = self.basic_vae.vqidx_to_motion(prev_code_bits, target_codes)
+
+        return {
+            'logits': logits,
+            'targets': target_codes,
+            'motion_recon': motion_recon,
+        }
+
     @torch.no_grad()
     def inference(self, batch, with_gtmotion=False):
         batch_size = batch["audio"].shape[0]
