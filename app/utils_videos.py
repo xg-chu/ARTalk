@@ -4,6 +4,7 @@
 import av
 import torch
 import numpy as np
+from fractions import Fraction
 
 def write_video(video_frames, output_path, fps, audio_samples=None, sample_rate=None, acodec="aac"):
     assert video_frames.ndim == 4, "Input frames should be a 4D array."
@@ -14,7 +15,7 @@ def write_video(video_frames, output_path, fps, audio_samples=None, sample_rate=
         video_frames = video_frames.astype(np.uint8)
     _, _, height, width = video_frames.shape
     container = av.open(output_path, mode="w")
-    stream = container.add_stream("h264", rate=fps)
+    stream = container.add_stream("h264", rate=Fraction(fps).limit_denominator(1000))
     stream.width = width
     stream.height = height
     stream.pix_fmt = "yuv420p"
