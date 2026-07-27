@@ -11,9 +11,9 @@ import gradio as gr
 from gtts import gTTS
 from tqdm import tqdm
 
-from app import BitwiseARModel
-from app.flame_model import FLAMEModel, RenderMesh
-from app.utils_videos import write_video
+from artalk import BitwiseARModel
+from artalk.flame_model import FLAMEModel, RenderMesh
+from artalk.utils_videos import write_video
 
 class ARTAvatarInferEngine:
     def __init__(self, load_gaga=False, fix_pose=False, clip_length=750, device='cuda'):
@@ -34,7 +34,7 @@ class ARTAvatarInferEngine:
         self.style_motion = None
 
         if load_gaga:
-            from app.GAGAvatar import GAGAvatar
+            from artalk.GAGAvatar import GAGAvatar
             self.GAGAvatar = GAGAvatar().to(device)
             self.GAGAvatar_flame = FLAMEModel(n_shape=300, n_exp=100, scale=5.0, no_lmks=True).to(device)
 
