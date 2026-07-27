@@ -1,0 +1,265 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "name": "artalk_wav2vec",
+      "path": "ARTalk_wav2vec.pt",
+      "required": true,
+      "source": {
+        "type": "huggingface",
+        "repo_id": "xg-chu/ARTalk",
+        "revision": "main",
+        "filename": "ARTalk_wav2vec.pt"
+      },
+      "size": 1959150898,
+      "sha256": "d89615a32e2a6b4e35cf5494c1e400b2acedc43812f63423b9f5d705046d67c2",
+      "license_note": "See upstream xg-chu/ARTalk model card."
+    },
+    {
+      "name": "config",
+      "path": "config.json",
+      "required": true,
+      "source": {
+        "type": "huggingface",
+        "repo_id": "xg-chu/ARTalk",
+        "revision": "main",
+        "filename": "config.json"
+      },
+      "size": 303,
+      "sha256": "7546248a7eace5184a3b072de6fac80f22109e32f073ba4f616a7971a6f190fe",
+      "license_note": "See upstream xg-chu/ARTalk model card."
+    },
+    {
+      "name": "flame_with_eye",
+      "path": "FLAME_with_eye.pt",
+      "required": true,
+      "manual": true,
+      "size": 26819643,
+      "sha256": "b87a1d3513b3df0504f1e1f93bcb85ac01abe4dadf92e75ac08046c4a68403be",
+      "note": "FLAME assets have separate access and licensing terms. Download or provide this file manually."
+    },
+    {
+      "name": "gagavatar_model",
+      "path": "GAGAvatar/GAGAvatar.pt",
+      "required": false,
+      "source": {
+        "type": "huggingface",
+        "repo_id": "xg-chu/GAGAvatar",
+        "revision": "main",
+        "filename": "assets/GAGAvatar.pt"
+      },
+      "size": 747434426,
+      "sha256": "75d449fd1d67dd7bbc613cef17f0196b1c84766935adc75d5231bc89e33950f8",
+      "license_note": "See upstream xg-chu/GAGAvatar model card."
+    },
+    {
+      "name": "tracked_avatars",
+      "path": "GAGAvatar/tracked.pt",
+      "required": false,
+      "source": {
+        "type": "huggingface",
+        "repo_id": "xg-chu/ARTalk",
+        "revision": "main",
+        "filename": "GAGAvatar/tracked.pt"
+      },
+      "size": 183503648,
+      "sha256": "9b716493929ca0a19a50ce87c291627ff15d81980cad572f75b8d023dc3770fd",
+      "license_note": "Example tracked avatars from upstream ARTalk. Do not replace this with private tracked avatars for redistribution."
+    },
+    {
+      "name": "style_angry_0",
+      "path": "style_motion/angry_0.pt",
+      "required": false,
+      "source": {
+        "type": "huggingface",
+        "repo_id": "xg-chu/ARTalk",
+        "revision": "main",
+        "filename": "style_motion/angry_0.pt"
+      },
+      "size": 2365843,
+      "sha256": "4f17f930661c1e42306ecf6e222b370ca2c4f775dbc63bde6402ca2f8135c556"
+    },
+    {
+      "name": "style_curious_0",
+      "path": "style_motion/curious_0.pt",
+      "required": false,
+      "source": {
+        "type": "huggingface",
+        "repo_id": "xg-chu/ARTalk",
+        "revision": "main",
+        "filename": "style_motion/curious_0.pt"
+      },
+      "size": 680437,
+      "sha256": "f0db8a645684583af9694d72924cad9b4ac4d16d1a3e7c26c979fa9a7a51220d"
+    },
+    {
+      "name": "style_doubtful_0",
+      "path": "style_motion/doubtful_0.pt",
+      "required": false,
+      "source": {
+        "type": "huggingface",
+        "repo_id": "xg-chu/ARTalk",
+        "revision": "main",
+        "filename": "style_motion/doubtful_0.pt"
+      },
+      "size": 2333193,
+      "sha256": "65863da3c4cc9fc11604f21c660684864ddfd135f88a84c0f25d0adba25bfc36"
+    },
+    {
+      "name": "style_doubtful_1",
+      "path": "style_motion/doubtful_1.pt",
+      "required": false,
+      "source": {
+        "type": "huggingface",
+        "repo_id": "xg-chu/ARTalk",
+        "revision": "main",
+        "filename": "style_motion/doubtful_1.pt"
+      },
+      "size": 1062478,
+      "sha256": "2ea3241f8a9a3bd3f428ba77d76720c32ef8696042d05329af4f7e95a1baecce"
+    },
+    {
+      "name": "style_happy_0",
+      "path": "style_motion/happy_0.pt",
+      "required": false,
+      "source": {
+        "type": "huggingface",
+        "repo_id": "xg-chu/ARTalk",
+        "revision": "main",
+        "filename": "style_motion/happy_0.pt"
+      },
+      "size": 2386200,
+      "sha256": "fdba588c443f1cfb17a11781b37515ababd933f65564a32f6859622ff62d3412"
+    },
+    {
+      "name": "style_happy_1",
+      "path": "style_motion/happy_1.pt",
+      "required": false,
+      "source": {
+        "type": "huggingface",
+        "repo_id": "xg-chu/ARTalk",
+        "revision": "main",
+        "filename": "style_motion/happy_1.pt"
+      },
+      "size": 531573,
+      "sha256": "3ed4aa1ee540c136e88546a63ae324ac4f677a72a3bd41423fab1a5eea7c30ca"
+    },
+    {
+      "name": "style_happy_2",
+      "path": "style_motion/happy_2.pt",
+      "required": false,
+      "source": {
+        "type": "huggingface",
+        "repo_id": "xg-chu/ARTalk",
+        "revision": "main",
+        "filename": "style_motion/happy_2.pt"
+      },
+      "size": 638005,
+      "sha256": "0b39a71e934c3bca01dce558e08b1953935392f98f1334e39759e0c9023cbd0f"
+    },
+    {
+      "name": "style_natural_0",
+      "path": "style_motion/natural_0.pt",
+      "required": false,
+      "source": {
+        "type": "huggingface",
+        "repo_id": "xg-chu/ARTalk",
+        "revision": "main",
+        "filename": "style_motion/natural_0.pt"
+      },
+      "size": 3129038,
+      "sha256": "5c929ca5a4f91ef8c4921964648cd2724f9e10d0ca520e0207009a2ed9b2bdcd"
+    },
+    {
+      "name": "style_natural_1",
+      "path": "style_motion/natural_1.pt",
+      "required": false,
+      "source": {
+        "type": "huggingface",
+        "repo_id": "xg-chu/ARTalk",
+        "revision": "main",
+        "filename": "style_motion/natural_1.pt"
+      },
+      "size": 696565,
+      "sha256": "775273821b842701d41acc17ed8bc022c806c9a44cc77b860213c6e56fe36612"
+    },
+    {
+      "name": "style_natural_2",
+      "path": "style_motion/natural_2.pt",
+      "required": false,
+      "source": {
+        "type": "huggingface",
+        "repo_id": "xg-chu/ARTalk",
+        "revision": "main",
+        "filename": "style_motion/natural_2.pt"
+      },
+      "size": 1327054,
+      "sha256": "7cebd082ba8fa4bb91c1d51c6a7a7c9e26c8892f648c9942f49344d42264de70"
+    },
+    {
+      "name": "style_natural_3",
+      "path": "style_motion/natural_3.pt",
+      "required": false,
+      "source": {
+        "type": "huggingface",
+        "repo_id": "xg-chu/ARTalk",
+        "revision": "main",
+        "filename": "style_motion/natural_3.pt"
+      },
+      "size": 1433043,
+      "sha256": "ae85ce6fbeaa3af633ee1022a6f96a543a88f40becd61a4c5f0bc997ab074078"
+    },
+    {
+      "name": "style_natural_4",
+      "path": "style_motion/natural_4.pt",
+      "required": false,
+      "source": {
+        "type": "huggingface",
+        "repo_id": "xg-chu/ARTalk",
+        "revision": "main",
+        "filename": "style_motion/natural_4.pt"
+      },
+      "size": 2811460,
+      "sha256": "cc76e17d724001d3d047c6d40c9c86a50550e7fb734a11bf043cc1eaad376005"
+    },
+    {
+      "name": "style_natural_5",
+      "path": "style_motion/natural_5.pt",
+      "required": false,
+      "source": {
+        "type": "huggingface",
+        "repo_id": "xg-chu/ARTalk",
+        "revision": "main",
+        "filename": "style_motion/natural_5.pt"
+      },
+      "size": 391285,
+      "sha256": "838dc72fccb22908dfc61b8965225295a7ae0c84a57f0672da31a48327b09fc0"
+    },
+    {
+      "name": "style_natural_6",
+      "path": "style_motion/natural_6.pt",
+      "required": false,
+      "source": {
+        "type": "huggingface",
+        "repo_id": "xg-chu/ARTalk",
+        "revision": "main",
+        "filename": "style_motion/natural_6.pt"
+      },
+      "size": 716469,
+      "sha256": "b32a9d6ed07978d375e51f0f8da9ece1b3e4bc8dad64a281f990fe712c54d7eb"
+    },
+    {
+      "name": "style_natural_7",
+      "path": "style_motion/natural_7.pt",
+      "required": false,
+      "source": {
+        "type": "huggingface",
+        "repo_id": "xg-chu/ARTalk",
+        "revision": "main",
+        "filename": "style_motion/natural_7.pt"
+      },
+      "size": 620213,
+      "sha256": "7ee71908c968e3a02f7d00c4079cbae0227551251da7a08ad2ed6ee074cd42f6"
+    }
+  ]
+}

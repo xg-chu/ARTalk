@@ -60,6 +60,16 @@ Prepare resources with:
 bash ./build_resources.sh
 ```
 
+When ARTalk is installed as a package, the asset manifest can be used instead:
+```
+artalk-assets download --root assets --include-optional
+```
+
+This downloads only assets with explicit upstream sources and verifies known
+sizes and SHA-256 hashes. `FLAME_with_eye.pt` is listed in the manifest but is
+not downloaded automatically because FLAME has separate access and license
+terms; provide it manually at `assets/FLAME_with_eye.pt`.
+
 ## Quick Start Guide
 ### Using <a href="https://github.com/gradio-app/gradio">Gradio</a> Interface
 
