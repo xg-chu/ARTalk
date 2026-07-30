@@ -9,5 +9,11 @@ description = "ARTalk: speech-driven 3D head animation"
 readme = "README.md"
 requires-python = ">=3.10"
 
+[project.scripts]
+artalk-assets = "artalk.assets:main"
+
 [tool.setuptools.packages.find]
 include = ["artalk*"]
+
+[tool.setuptools.package-data]
+artalk = ["assets_manifest.json"]
