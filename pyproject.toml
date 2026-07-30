@@ -7,7 +7,7 @@ name = "artalk"
 version = "0.1.0"
 description = "ARTalk: speech-driven 3D head animation"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 
 [project.scripts]
 artalk-assets = "artalk.assets:main"

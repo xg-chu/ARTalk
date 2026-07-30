@@ -16,13 +16,7 @@ from importlib.resources import files
 from pathlib import Path
 from typing import Any
 
-try:
-    import tomllib
-except ModuleNotFoundError:  # pragma: no cover - Python 3.10 compatibility
-    try:
-        import tomli as tomllib
-    except ModuleNotFoundError:
-        tomllib = None
+import tomllib
 
 
 class AssetConfigError(RuntimeError):
@@ -113,10 +107,6 @@ def find_pyproject(start: Path) -> Path:
 
 
 def load_pyproject(path: Path) -> dict[str, Any]:
-    if tomllib is None:
-        raise AssetConfigError(
-            f"Reading {path} requires Python >= 3.11 or the tomli package."
-        )
     with path.open("rb") as f:
         return tomllib.load(f)
 
