@@ -82,10 +82,14 @@ class ARTalkAssets:
     def gagavatar_dir(self) -> Path:
         return self.root / "GAGAvatar"
 
-    def validate(self, audio_encoder: str = "wav2vec") -> None:
+    def validate(
+        self,
+        audio_encoder: str = "wav2vec",
+        checkpoint_path: Path | None = None,
+    ) -> None:
         required = [
             self.root,
-            self.checkpoint(audio_encoder),
+            checkpoint_path or self.checkpoint(audio_encoder),
             self.config,
             self.flame_model,
         ]

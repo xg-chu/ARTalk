@@ -139,6 +139,10 @@ class ARTalkRuntimeConfig:
     asset_dir: Path | str | None = None
     assets: ARTalkAssets | None = None
     audio_encoder: str = "wav2vec"
+    # Explicit checkpoint override for model variants sharing an audio
+    # encoder (e.g. retrained weights); defaults to the asset tree's
+    # ARTalk_<audio_encoder>.pt.
+    checkpoint_path: Path | str | None = None
     device: str = "auto"
     clip_length: int = 750
     fps: int = 25
@@ -153,6 +157,11 @@ class ARTalkRuntimeConfig:
 
     def resolved_asset_dir(self) -> Path:
         return self.resolved_assets().root
+
+    def resolved_checkpoint(self) -> Path:
+        if self.checkpoint_path is not None:
+            return Path(self.checkpoint_path).expanduser()
+        return self.resolved_assets().checkpoint(self.audio_encoder)
 
 
 @dataclass
@@ -174,11 +183,14 @@ class ARTalkRuntime:
     def __init__(self, config: ARTalkRuntimeConfig | None = None):
         self.config = config or ARTalkRuntimeConfig()
         self.assets = self.config.resolved_assets()
-        self.assets.validate(self.config.audio_encoder)
+        self.checkpoint_path = self.config.resolved_checkpoint()
+        self.assets.validate(
+            self.config.audio_encoder, checkpoint_path=self.checkpoint_path
+        )
         self.asset_dir = self.assets.root
         self.device = select_device(self.config.device)
         ckpt = torch.load(
-            self.assets.checkpoint(self.config.audio_encoder),
+            self.checkpoint_path,
             map_location="cpu",
             weights_only=True,
         )
